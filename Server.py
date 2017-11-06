@@ -53,17 +53,21 @@ class buttons:
         frame = Frame(master)
         frame.pack()
 
-        self.printButton = Button(frame, text="Alarm", command=self.alarm)       # knop 1
+        # knop 1 "Alarm"
+        self.printButton = Button(frame, text="Alarm", command=self.alarm)
         self.printButton.pack(side=LEFT)
 
-        self.printButton = Button(frame, text="False alarm", command=self.false_alarm)     # knop 2
+        # knop 2 "Vals alarm"
+        self.printButton = Button(frame, text="False alarm", command=self.false_alarm)
         self.printButton.pack(side=LEFT)
 
-    def alarm(self):                                            # stuurt (encoded) "alarm" terug naar client
+    def alarm(self):
+        # stuurt (encoded) "alarm" terug naar client
         print("alarm is binnengekomen op de server")
         conn.sendall(str.encode("alarm"))
 
-    def false_alarm(self):                                      # stuurt (encoded) "falsealarm" terug naar client
+    def false_alarm(self):
+        # stuurt (encoded) "falsealarm" terug naar client
         print("vals alarm is binnengekomen op de server")
         conn.sendall(str.encode("falsealarm"))
 

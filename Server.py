@@ -7,7 +7,8 @@ port = 5560
 storedValue = "Yo what's up?"
 
 
-def setupServer():                                              # het aanmaken van de server
+def setupServer():
+    # het aanmaken van de server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Socket created.")
     try:
@@ -18,25 +19,33 @@ def setupServer():                                              # het aanmaken v
     return s
 
 def setupConnection():
-    s.listen(1)                                                 # het aanmaken van de connectie (verbinding)
+    # het aanmaken van de connectie (verbinding)
+    s.listen(1)
     conn, address = s.accept()
     print("Connected to: " + address[0] + ":" + str(address[1]))
     return conn
 
-def dataTransfer(conn):                                         # een grote loop die data ontvangt/verzend
-    data = conn.recv(1024)                                      # data ontvangen
-    data = data.decode('utf-8')                                 # data decoden
-    dataMessage = data.split(' ', 1)                            # data splitten
-    command = dataMessage[0]                                    # eerste "woord" van de data
+def dataTransfer(conn):
+    # een grote loop die data ontvangt/verzend
+    # data ontvangen
+    data = conn.recv(1024)
+    # data decoden
+    data = data.decode('utf-8')
+    # data splitten
+    dataMessage = data.split(' ', 1)
+    # eerste "woord" van de data
+    command = dataMessage[0]
     print(command)
-    if command == 'button':                                     # komt de datamessage overeen met button click (ontvangen van client): print dan dit:
+    # komt de datamessage overeen met button click (ontvangen van client): print dan dit:
+    if command == 'button':
         print('motion detected')
 
 global s
 s = setupServer()
 conn = setupConnection()
 
-class buttons:                                                  # een class die de hele GUI bundelt met de bijbehorende functies
+class buttons:
+    # een class die de hele GUI bundelt met de bijbehorende functies
     def __init__(self, master):
         theLabel = Label(root, text="Beveiligingssysteem")
         theLabel.pack()

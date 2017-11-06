@@ -1,3 +1,4 @@
+from tkinter import *
 import socket
 
 host = ''
@@ -5,7 +6,8 @@ port = 5560
 
 storedValue = "Yo what's up?"
 
-def setupServer():
+
+def setupServer():                                              # het aanmaken van de server
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     print("Socket created.")
     try:
@@ -16,52 +18,48 @@ def setupServer():
     return s
 
 def setupConnection():
-    s.listen(1) # Allow one connection at a time
+    s.listen(1)                                                 # het aanmaken van de connectie (verbinding)
     conn, address = s.accept()
     print("Connected to: " + address[0] + ":" + str(address[1]))
     return conn
 
+def dataTransfer(conn):                                         # een grote loop die data ontvangt/verzend
+    data = conn.recv(1024)                                      # data ontvangen
+    data = data.decode('utf-8')                                 # data decoden
+    dataMessage = data.split(' ', 1)                            # data splitten
+    command = dataMessage[0]                                    # eerste "woord" van de data
+    print(command)
+    if command == 'button':                                     # komt de datamessage overeen met button click (ontvangen van client): print dan dit:
+        print('motion detected')
 
-def GET():
-    reply = storedValue
-    return reply
-
-def REPEAT(dataMessage):
-    reply = dataMessage[1]
-    return reply
-
-
-def dataTransfer(conn):
-    # a big loop that sends/receives data until told not to
-    while True:
-        # receive data
-        data = conn.recv(1024) # receive the data
-        data = data.decode('utf-8')
-        dataMessage = data.split(' ', 1)
-        command = dataMessage[0]
-        if command == 'GET':
-            reply = GET()
-        elif command == 'REPEAT':
-            reply = REPEAT(dataMessage)
-        elif command == 'EXIT':
-            print("Our client has left us : ")
-            break
-        elif command == 'false alarm':
-            print("Everything is safe.")
-            s.close()
-            break
-        else:
-            reply = 'Unknown command'
-        # send the reply back to the client
-        conn.sendall(str.encode(reply))
-        print("Data has been sent!")
-
-
+global s
 s = setupServer()
+conn = setupConnection()
 
-while True:
-    try:
-        conn = setupConnection()
-        dataTransfer(conn)
-    except:
-        break
+class buttons:                                                  # een class die de hele GUI bundelt met de bijbehorende functies
+    def __init__(self, master):
+        theLabel = Label(root, text="Beveiligingssysteem")
+        theLabel.pack()
+
+        frame = Frame(master)
+        frame.pack()
+
+        self.printButton = Button(frame, text="Alarm", command=self.alarm)       # knop 1
+        self.printButton.pack(side=LEFT)
+
+        self.printButton = Button(frame, text="False alarm", command=self.false_alarm)     # knop 2
+        self.printButton.pack(side=LEFT)
+
+    def alarm(self):                                            # stuurt (encoded) "alarm" terug naar client
+        print("alarm is binnengekomen op de server")
+        conn.sendall(str.encode("alarm"))
+
+    def false_alarm(self):                                      # stuurt (encoded) "falsealarm" terug naar client
+        print("vals alarm is binnengekomen op de server")
+        conn.sendall(str.encode("falsealarm"))
+
+
+root = Tk()
+a = buttons(root)
+root.mainloop()
+
